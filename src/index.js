@@ -15,7 +15,7 @@ import BookStoreService from "./services/bookstore-service"
 import HomePage from "./pages/home-page";
 import CartPage from "./pages/cart-page";
 
-import App from './components/app/App';
+
 
 const service = new BookStoreService;
 

@@ -2,37 +2,55 @@ import React,{Component, useContext,useState,useEffect, useReducer} from "react"
 import BookListItem from "../book-list-item";
 import {connect} from "react-redux"
 import {booksLoaded} from "../../actions"
-import {BookstoreServiceContext} from "../contexts"
-import reducer from "../../reducers"
+import {withBookStoreService} from '../hoc'
+import compose from "../../utils/compose"
 
 
 
-function BookList (props){
-    const [loading,setLoading] = useState(true)
+class BookList extends Component{
+    state={
+        loading:true,
+    };
+    // const [loading,setLoading] = useState(true)
+    //
+    // const [state, dispatch] = useReducer(reducer, {});
+    //
+    // const {books} = useContext(BookstoreServiceContext).getBooks();
+    //
+    // useEffect(()=>{
+    //     dispatch(booksLoaded(books));
+    //     setLoading(false)
+    // },[])
+    componentDidMount() {
+        const {bookStoreService,booksLoaded} = this.props;
+        const {books} = bookStoreService.getBooks();
+        booksLoaded(books)
+    }
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevProps.books !== this.props.books) {  console.log("needUpdate")
+            this.setState({loading:false})};
+        console.log("prevProps",prevProps.books)
+        console.log("this.props",this.props.books)
+    }
 
-    const [state, dispatch] = useReducer(reducer, {});
-
-    const {books} = useContext(BookstoreServiceContext).getBooks();
-
-    useEffect(()=>{
-        dispatch(booksLoaded(books));
-        setLoading(false)
-    },[])
 
 
+    render() {
+        console.log(this.props)
+        const {loading} = this.state;
+        const {books} = this.props;
+        if(loading) return (<h3>loading...</h3>) ;
 
-
-
-    console.log("state",state)
-    if(loading) return (<h3>loading...</h3>) ;
-
-    const list = (state.books.map(book=>(<li key={book.id}><BookListItem book={book}/></li>)))
+        const list = (books.map(book=>(<li key={book.id}><BookListItem book={book}/></li>)))
 
         return (
             <ul>
                 {list}
             </ul>
         )
+    }
+
+
 
 }
 
@@ -42,5 +60,5 @@ function mapStateToProps({books}) {
 
 const mapDispatchToProps = {booksLoaded}
 
-//connect(mapStateToProps, mapDispatchToProps)(
-export default BookList
+
+export default compose(withBookStoreService(),connect(mapStateToProps, mapDispatchToProps))(BookList)
