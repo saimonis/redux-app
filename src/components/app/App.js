@@ -1,14 +1,11 @@
 import React from 'react';
-import ErrorBoundary from "../error-boundary";
 
-function App() {
-  return (
-    <div>
-    <ErrorBoundary>
-11
-    </ErrorBoundary>
-    </div>
-  );
+function App(props) {
+
+
+    return (
+        <h1>kek</h1>
+    );
 }
 
 export default App;
